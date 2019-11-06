@@ -27,21 +27,23 @@ class AQIHomeBusApp < HomeBusApp
 
   def work!
     uri = URI(url)
-    results = Net::HTTP.get(uri)
 
-    aqi = JSON.parse results, symbolize_names: true
-    pp aqi
+    begin
+      results = Net::HTTP.get(uri)
 
-    answer =         {
-                    id: @uuid,
-                    timestamp: Time.now.to_i,
-                    observations: aqi.map { |o| { name: o[:ParameterName], aqi: o[:AQI], condition: o[:Category][:Name], condition_index: o[:Category][:Number] }}
-    }
-    pp answer
+      aqi = JSON.parse results, symbolize_names: true
+
+      answer =         {
+        id: @uuid,
+        timestamp: Time.now.to_i,
+        observations: aqi.map { |o| { name: o[:ParameterName], aqi: o[:AQI], condition: o[:Category][:Name], condition_index: o[:Category][:Number] }}
+      }
           
-    @mqtt.publish '/aqi',
-                  JSON.generate(answer),
-                  true
+      @mqtt.publish '/aqi',
+                    JSON.generate(answer),
+                    true
+    rescue
+    end
 
     sleep update_delay
   end
