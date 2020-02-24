@@ -7,6 +7,8 @@ require 'net/http'
 require 'json'
 
 class AQIHomeBusApp < HomeBusApp
+  DDC = 'org.homebus.experimental.aqi'
+
   def initialize(options)
     @options = options
     super
@@ -16,33 +18,41 @@ class AQIHomeBusApp < HomeBusApp
     15*60
   end
 
-  def url
-    # https://docs.airnowapi.org/CurrentObservationsByZip/query
-    "http://www.airnowapi.org/aq/observation/zipCode/current/?format=application/json&zipCode=#{options[:zipcode]}&distance=25&API_KEY=#{ENV['AIRNOW_API_KEY']}"
-  end
-
   def setup!
     Dotenv.load('.env')
+    @airnow_api_key = ENV['AIRNOW_API_KEY']
+    @zipcode = @options[:zipcode] || ENV['ZIPCODE']
   end
 
-  def work!
-    uri = URI(url)
+  def _url
+    # https://docs.airnowapi.org/CurrentObservationsByZip/query
+    "http://www.airnowapi.org/aq/observation/zipCode/current/?format=application/json&zipCode=#{@zipcode}&distance=25&API_KEY=#{@airnow_api_key}"
+  end
 
+  def _get_aqi
     begin
+      uri = URI(_url)
       results = Net::HTTP.get(uri)
 
       aqi = JSON.parse results, symbolize_names: true
-
-      answer =         {
-        id: @uuid,
-        timestamp: Time.now.to_i,
-        observations: aqi.map { |o| { name: o[:ParameterName], aqi: o[:AQI], condition: o[:Category][:Name], condition_index: o[:Category][:Number] }}
-      }
-          
-      @mqtt.publish '/aqi',
-                    JSON.generate(answer),
-                    true
+      return aqi
     rescue
+      nil
+    end
+  end
+
+  def work!
+    aqi = _get_aqi
+
+    if aqi
+      answer =  {
+        id: @uuid,
+        timestamp: Time.now.to_i
+      }
+
+      answer[DDC] = aqi.map { |o| { name: o[:ParameterName], aqi: o[:AQI], condition: o[:Category][:Name], condition_index: o[:Category][:Number] }}
+ 
+      publish! DDC, answer
     end
 
     sleep update_delay
@@ -65,7 +75,7 @@ class AQIHomeBusApp < HomeBusApp
   end
 
   def serial_number
-    ''
+    @zipcode
   end
 
   def pin
