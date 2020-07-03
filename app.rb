@@ -44,13 +44,17 @@ class AQIHomeBusApp < HomeBusApp
   def work!
     aqi = _get_aqi
 
+    if options[:verbose]
+      pp aqi
+    end
+
     if aqi
       payload = aqi.map { |o| { name: o[:ParameterName], aqi: o[:AQI], condition: o[:Category][:Name], condition_index: o[:Category][:Number] }}
 
       publish! DDC, payload
 
       if options[:verbose]
-        puts answer
+        pp payload
       end
     end
 
