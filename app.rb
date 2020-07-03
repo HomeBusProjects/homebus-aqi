@@ -52,6 +52,7 @@ class AQIHomeBusApp < HomeBusApp
           ddc: DDC,
           payload: aqi.map { |o| { name: o[:ParameterName], aqi: o[:AQI], condition: o[:Category][:Name], condition_index: o[:Category][:Number] }}
         }
+      }
  
       publish! DDC, answer
     end
