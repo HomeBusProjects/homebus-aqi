@@ -47,10 +47,11 @@ class AQIHomeBusApp < HomeBusApp
     if aqi
       answer =  {
         id: @uuid,
-        timestamp: Time.now.to_i
-      }
-
-      answer[DDC] = aqi.map { |o| { name: o[:ParameterName], aqi: o[:AQI], condition: o[:Category][:Name], condition_index: o[:Category][:Number] }}
+        timestamp: Time.now.to_i,
+        contents: {
+          ddc: DDC,
+          payload: aqi.map { |o| { name: o[:ParameterName], aqi: o[:AQI], condition: o[:Category][:Name], condition_index: o[:Category][:Number] }}
+        }
  
       publish! DDC, answer
     end
