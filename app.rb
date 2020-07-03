@@ -47,16 +47,7 @@ class AQIHomeBusApp < HomeBusApp
     if aqi
       payload = aqi.map { |o| { name: o[:ParameterName], aqi: o[:AQI], condition: o[:Category][:Name], condition_index: o[:Category][:Number] }}
 
-      answer =  {
-        source: @uuid,
-        timestamp: Time.now.to_i,
-        contents: {
-          ddc: DDC,
-          payload: payload
-        }
-      }
- 
-      publish! DDC, answer
+      publish! DDC, payload
 
       if options[:verbose]
         puts answer
