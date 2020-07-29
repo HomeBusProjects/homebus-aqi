@@ -2,6 +2,7 @@
 
 require 'homebus'
 require 'homebus_app'
+require 'mqtt'
 
 require 'dotenv'
 
