@@ -56,11 +56,11 @@ class AQIHomeBusApp < HomeBusApp
       aqi_pm25 = aqi.select { |a| a[:ParameterName] == 'PM2.5' }
       aqi_o3   = aqi.select { |a| a[:ParameterName] == 'O3' }
 
-      if aqi_pm25
+      if aqi_pm25.length > 0
         payload = {
-          aqi: aqi_pm25[:AQI],
-          condition: aqi_pm25[:Category][:Name],
-          condition_index: aqi_pm25[:Category][:Number]
+          aqi: aqi_pm25[0][:AQI],
+          condition: aqi_pm25[0][:Category][:Name],
+          condition_index: aqi_pm25[0][:Category][:Number]
         }
 
         publish! DDC_PM, payload
@@ -70,11 +70,11 @@ class AQIHomeBusApp < HomeBusApp
         end
       end
 
-      if aqi_o3
+      if aqi_o3.length > 0
         payload = {
-          aqi: aqi_o3[:AQI],
-          condition: aqi_o3[:Category][:Name],
-          condition_index: aqi_o3[:Category][:Number]
+          aqi: aqi_o3[0][:AQI],
+          condition: aqi_o3[0][:Category][:Name],
+          condition_index: aqi_o3[0][:Category][:Number]
         }
 
         publish! DDC_O3, payload
