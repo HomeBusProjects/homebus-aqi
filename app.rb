@@ -83,11 +83,6 @@ class AQIHomeBusApp < HomeBusApp
           pp DDC_O3, payload
         end
       end
-
-
-      if options[:verbose]
-        pp payload
-      end
     end
 
     sleep update_delay
