@@ -66,7 +66,7 @@ class AQIHomeBusApp < HomeBusApp
         publish! DDC_PM, payload
 
         if options[:verbose]
-          pp DDC_PM25, payload
+          pp DDC_PM, payload
         end
       end
 
