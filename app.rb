@@ -1,13 +1,16 @@
 # coding: utf-8
+
 require 'homebus'
 require 'homebus_app'
-require 'mqtt'
+
 require 'dotenv'
+
 require 'net/http'
 require 'json'
 
 class AQIHomeBusApp < HomeBusApp
-  DDC = 'org.homebus.experimental.aqi'
+  DDC_PM = 'org.homebus.experimental.aqi-pm25'
+  DDC_O3 = 'org.homebus.experimental.aqi-o3'
 
   def initialize(options)
     @options = options
@@ -49,9 +52,37 @@ class AQIHomeBusApp < HomeBusApp
     end
 
     if aqi
-      payload = aqi.map { |o| { name: o[:ParameterName], aqi: o[:AQI], condition: o[:Category][:Name], condition_index: o[:Category][:Number] }}
+      aqi_pm25 = aqi.select { |a| a[:ParameterName] == 'PM2.5' }
+      aqi_o3   = aqi.select { |a| a[:ParameterName] == 'O3' }
 
-      publish! DDC, payload
+      if aqi_pm25
+        payload = {
+          aqi: aqi_pm25[:AQI],
+          condition: aqi_pm25[:Category][:Name],
+          condition_index: aqi_pm25[:Category][:Number]
+        }
+
+        publish! DDC_PM, payload
+
+        if options[:verbose]
+          pp DDC_PM25, payload
+        end
+      end
+
+      if aqi_o3
+        payload = {
+          aqi: aqi_o3[:AQI],
+          condition: aqi_o3[:Category][:Name],
+          condition_index: aqi_o3[:Category][:Number]
+        }
+
+        publish! DDC_O3, payload
+
+        if options[:verbose]
+          pp DDC_O3, payload
+        end
+      end
+
 
       if options[:verbose]
         pp payload
