@@ -1,15 +1,13 @@
 # coding: utf-8
 
 require 'homebus'
-require 'homebus_app'
-require 'mqtt'
 
 require 'dotenv'
 
 require 'net/http'
 require 'json'
 
-class AQIHomeBusApp < HomeBusApp
+class AQIHomebusApp < Homebus::App
   DDC_PM = 'org.homebus.experimental.aqi-pm25'
   DDC_O3 = 'org.homebus.experimental.aqi-o3'
 
@@ -18,7 +16,7 @@ class AQIHomeBusApp < HomeBusApp
     super
   end
 
-  def update_delay
+  def update_interval
     15*60
   end
 
@@ -26,6 +24,12 @@ class AQIHomeBusApp < HomeBusApp
     Dotenv.load('.env')
     @airnow_api_key = ENV['AIRNOW_API_KEY']
     @zipcode = @options[:zipcode] || ENV['ZIPCODE']
+
+    @device = Homebus::Device.new name: "Air Quality Index for #{@zip_code}",
+                                  manufacturer: 'Homebus',
+                                  model: 'AQI publisher',
+                                  serial_number: @zip_code
+
   end
 
   def _url
@@ -85,45 +89,18 @@ class AQIHomeBusApp < HomeBusApp
       end
     end
 
-    sleep update_delay
+    sleep update_interval
   end
 
-  def manufacturer
-    'HomeBus'
+  def name
+    'Homebus AQI publisher'
   end
 
-  def model
-    'Air Quality Index'
-  end
-
-  def friendly_name
-    'Air Quality Index'
-  end
-
-  def friendly_location
-    'Portland, OR'
-  end
-
-  def serial_number
-    @zipcode
-  end
-
-  def pin
-    ''
+  def publishes
+    [ DDC_PM, DDC_O3 ]
   end
 
   def devices
-    [
-      { friendly_name: 'Air Quality Index',
-        friendly_location: 'Portland, OR',
-        update_frequency: update_delay,
-        index: 0,
-        accuracy: 0,
-        precision: 0,
-        wo_topics: [ '/aqi' ],
-        ro_topics: [],
-        rw_topics: []
-      }
-    ]
+    [ @device ]
   end
 end

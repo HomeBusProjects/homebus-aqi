@@ -1,6 +1,6 @@
-require 'homebus_app_options'
+require 'homebus/options'
 
-class AQIHomeBusAppOptions < HomeBusAppOptions
+class AQIHomebusAppOptions < Homebus::Options
   def app_options(op)
     zipcode_help = 'the zip code of the reporting area'
 
