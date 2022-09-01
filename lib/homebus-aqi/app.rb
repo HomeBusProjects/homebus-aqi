@@ -28,7 +28,7 @@ class HomebusAqi::App < Homebus::App
     @device = Homebus::Device.new name: "Air Quality Index for #{@zipcode}",
                                   manufacturer: 'Homebus',
                                   model: 'AQI publisher',
-                                  serial_number: @zip_code.to_s
+                                  serial_number: @zipcode.to_s
 
   end
 
