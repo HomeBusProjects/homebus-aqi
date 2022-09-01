@@ -28,7 +28,7 @@ class HomebusAqi::App < Homebus::App
     @device = Homebus::Device.new name: "Air Quality Index for #{@zip_code}",
                                   manufacturer: 'Homebus',
                                   model: 'AQI publisher',
-                                  serial_number: @zip_code
+                                  serial_number: @zip_code.to_s
 
   end
 
@@ -67,7 +67,7 @@ class HomebusAqi::App < Homebus::App
           condition_index: aqi_pm25[0][:Category][:Number]
         }
 
-        publish! DDC_PM, payload
+        @device.publish! DDC_PM, payload
 
         if options[:verbose]
           pp DDC_PM, payload
@@ -81,7 +81,7 @@ class HomebusAqi::App < Homebus::App
           condition_index: aqi_o3[0][:Category][:Number]
         }
 
-        publish! DDC_O3, payload
+        @device.publish! DDC_O3, payload
 
         if options[:verbose]
           pp DDC_O3, payload
