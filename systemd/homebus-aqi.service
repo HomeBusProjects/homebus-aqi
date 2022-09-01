@@ -4,13 +4,10 @@ After=network.target
 
 [Service]
 Type=simple
-
 User=homebus
 WorkingDirectory=/home/homebus/homebus-aqi
-
-ExecStart=/home/homebus/.rbenv/bin/rbenv exec bundle exec homebus-aqi.rb
+ExecStart=/home/homebus/.rbenv/bin/rbenv exec bundle exec bin/homebus-aqi
 TimeoutSec=30
-
 Restart=always
 
 [Install]
