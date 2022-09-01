@@ -25,7 +25,7 @@ class HomebusAqi::App < Homebus::App
     @airnow_api_key = ENV['AIRNOW_API_KEY']
     @zipcode = @options[:zipcode] || ENV['ZIPCODE']
 
-    @device = Homebus::Device.new name: "Air Quality Index for #{@zip_code}",
+    @device = Homebus::Device.new name: "Air Quality Index for #{@zipcode}",
                                   manufacturer: 'Homebus',
                                   model: 'AQI publisher',
                                   serial_number: @zip_code.to_s
