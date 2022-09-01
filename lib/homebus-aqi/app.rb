@@ -7,7 +7,7 @@ require 'dotenv'
 require 'net/http'
 require 'json'
 
-class AQIHomebusApp < Homebus::App
+class HomebusAqi::App < Homebus::App
   DDC_PM = 'org.homebus.experimental.aqi-pm25'
   DDC_O3 = 'org.homebus.experimental.aqi-o3'
 

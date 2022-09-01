@@ -1,0 +1,9 @@
+#!/usr/bin/env ruby
+
+require 'homebus-aqi/options'
+require 'homebus-aqi/app'
+
+aqi_app_options = HomebusAqi::Options.new
+
+aqi_app = HomebusAqi::App.new aqi_app_options.options
+aqi_app.run!

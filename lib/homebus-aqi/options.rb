@@ -1,6 +1,7 @@
 require 'homebus/options'
+require 'homebus-aqi/version'
 
-class AQIHomebusAppOptions < Homebus::Options
+class HomebusAqi::Options < Homebus::Options
   def app_options(op)
     zipcode_help = 'the zip code of the reporting area'
 
@@ -13,7 +14,7 @@ class AQIHomebusAppOptions < Homebus::Options
   end
 
   def version
-    '0.0.1'
+    HomebusAqi::VERSION
   end
 
   def name
