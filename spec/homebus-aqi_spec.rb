@@ -67,7 +67,7 @@ end
 describe TestHomebusAqi do
   context "Methods" do
     options = HomebusAqi::Options.new
-    app = HomebusAqi::App.new(options)
+    app = TestHomebusAqi.new(options)
 
     it "Has a name" do
       expect(app.name).not_to be_nil
