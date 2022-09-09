@@ -9,7 +9,7 @@ GIT
 PATH
   remote: .
   specs:
-    homebus-aqi (0.0.1)
+    homebus-aqi (0.1.0)
 
 GEM
   remote: https://rubygems.org/
